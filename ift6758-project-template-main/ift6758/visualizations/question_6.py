@@ -8,6 +8,8 @@ import plotly.graph_objects as go
 from scipy.stats import gaussian_kde
 from PIL import Image
 
+#configure path
+PLOT_PATH = "/ift6758/ift6758-blog-template-main/_includes/question_6_shotmap.html"
 
 def prepare_shotmap_data(df, kernel_bw=1, n1=101, n2=101):
     
@@ -162,5 +164,7 @@ def plot_shotmap(shotmap_df, rink_image, n1=101, n2=101):
         autosize=False,
         width=img_width*1.5,
         height=img_height*1.5)
-
+    
+    fig.write_html(PLOT_PATH)
+    
     fig.show()
