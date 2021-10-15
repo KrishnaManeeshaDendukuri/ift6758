@@ -6,8 +6,8 @@
 
 **Note:** 
 1. This section assumes that one is running the codebase from the repository folder.
-2. Code for Question 2 has been included via a module and logic discussed in the blog
-**Usage**
+2. Code for Question 2 has been included via a module in ift6758/data/ folder and logic discussed in the blog
+* **Usage**
 ```python
 result_file = get_season_files(seasons = [2019], clear_existing_files = False)   
 ```
