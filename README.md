@@ -1,6 +1,6 @@
 # IFT6758 Project 2021
 
-This Project is based upon the national sport of Canada: Icehockey, using the play-by-play data captured by the NHL API.
+The Project is based upon the national sport of Canada: Ice hockey! We use both the aggregate and the play-by-play data captured by NHL API.
 
 ## Milestone 1
 
