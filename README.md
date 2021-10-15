@@ -12,7 +12,7 @@ The first milestone focuses on the first two stages of the project i.e.
 
 ### 1.a. Project Setup
 
-* **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
+* **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 1, 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
 * **ift6758-project-template-main/ift6758/visualizations/**: Contains the module for question 6 that deals with the advanced visualizations using plotly.
 * **ift6758-project-template-main/notebooks/**: Contains the notebooks for individual questions from 1 to 6, which in turn make use of the modules written above.
 
