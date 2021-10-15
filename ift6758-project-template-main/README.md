@@ -1,6 +1,6 @@
 # IFT6758 Project Codebase
 
-* **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
+* **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 1, 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
 * **ift6758-project-template-main/ift6758/visualizations/**: Contains the module for question 6 that deals with the advanced visualizations using plotly.
 * **ift6758-project-template-main/notebooks/**: Contains the notebooks for individual questions from 1 to 6, which in turn make use of the modules written in the [ift6758/data/](https://github.com/etiennedemers/ift6758/tree/master/ift6758-project-template-main/ift6758/data) folder.
 
