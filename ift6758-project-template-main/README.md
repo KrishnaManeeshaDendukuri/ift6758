@@ -1,12 +1,18 @@
-# IFT6758 Repo Template
+# IFT6758 Project Codebase
 
-This template provides you with a skeleton of a Python package that can be installed into your local machine.
-This allows you access your code from anywhere on your system if you've activated the environment the package was installed to.
-You are encouraged to leverage this package as a skeleton and add all of your reusable code, functions, etc. into relevant modules.
-This makes collaboration much easier as the package could be seen as a "single source of truth" to pull data, create visualizations, etc. rather than relying on a jumble of notebooks.
-You can still run into trouble if branches are not frequently merged as work progresses, so try to not let your branches diverge too much!
+* **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
+* **ift6758-project-template-main/ift6758/visualizations/**: Contains the module for question 6 that deals with the advanced visualizations using plotly.
+* **ift6758-project-template-main/notebooks/**: Contains the notebooks for individual questions from 1 to 6, which in turn make use of the modules written in the [ift6758/data/](https://github.com/etiennedemers/ift6758/tree/master/ift6758-project-template-main/ift6758/data) folder.
 
-Also included in this repo is an image of the NHL ice rink that you can use in your plots.
+**Note:** 
+1. This section assumes that one is running the codebase from the repository folder.
+2. Taking the order of questions into account, it is important to understand that question 3, relies on getting the tidy data from the module for question 4, in order to fulfil the expectatins from this section of the project. To aid this, a file **tidy.csv** will be generated in [Question_4.ipynb](https://github.com/etiennedemers/ift6758/blob/master/ift6758-project-template-main/notebooks/Question_4.ipynb)
+
+Instructions required for any due installations can be found [here](https://github.com/etiennedemers/ift6758/tree/master/ift6758-project-template-main#readme).
+
+## Instructions given 
+
+Included in this repo is an image of the NHL ice rink that you can use in your plots.
 It has the correct location of lines, faceoff dots, and length/width ratio as the real NHL rink.
 Note that the rink is 200 feet long and 85 feet wide, with the goal line 11 feet from the nearest edge of the rink, and the blue line 75 feet from the nearest edge of the rink.
 
