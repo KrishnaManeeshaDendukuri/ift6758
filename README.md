@@ -4,13 +4,13 @@ This Project is based upon the national sport of Canada: Icehockey, using the pl
 
 ## Milestone 1
 
-### 1 Introduction
+### 1. Introduction
 
 The first milestone focuses on the first two stages of the project i.e. 
 * Extracting and cleaning the raw data fetched using the NHL API. 
 * Analyzing this data over the seasons, using visualizations and interactive tools.
 
-### 1.a Project Setup
+### 1.a. Project Setup
 
 * **ift6758-project-template-main/ift6758/data/**: Contains the modules for the questions 2 and 4 i.e. to retreive, download and tidy the raw data from the NHL API.
 * **ift6758-project-template-main/ift6758/visualizations/**: Contains the module for question 6 that deals with the advanced visualizations using plotly.
@@ -19,7 +19,7 @@ The first milestone focuses on the first two stages of the project i.e.
 **Note:** This section assumes that one is running the codebase from the repository folder.
 Instructions required for any due installations can be found [here](https://github.com/etiennedemers/ift6758/tree/master/ift6758-project-template-main#readme).
 
-### 1.b Blogpost Setup
+### 1.b. Blogpost Setup
 
 * **ift6758-blog-template-main/_posts/**: Contains the project's static webpage markdown file
 * **ift6758-blog-template-main/figures/**: Contains all the plots generated and included in the blog post
