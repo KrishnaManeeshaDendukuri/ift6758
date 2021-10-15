@@ -26,3 +26,7 @@ Instructions required for any due installations can be found [here](https://gith
 * **ift6758-blog-template-main/_includes/**: Contains the plotly visualization generated as an HTML file 
 
 This blog post is currently served locally, So, the instructions for the same are included [here](https://github.com/etiennedemers/ift6758/tree/master/ift6758-blog-template-main#readme).
+
+### References
+
+All the links to the articles or posts referred in order to answer a questions have been added in-line with the content and the python notebooks.
