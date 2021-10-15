@@ -1,8 +1,10 @@
-# IFT6758 Blog Post Template
+# IFT6758 Blog Post
 
-This blog post template is based off of the [Lanyon](https://github.com/poole/lanyon) template (the original readme can be found at the bottom).
+* **ift6758-blog-template-main/_posts/**: Contains the project's static webpage markdown file
+* **ift6758-blog-template-main/figures/**: Contains all the plots generated and included in the blog post
+* **ift6758-blog-template-main/_includes/**: Contains the plotly visualization generated as an HTML file 
 
-
+## Instructions given
 
 ## Installation
 
