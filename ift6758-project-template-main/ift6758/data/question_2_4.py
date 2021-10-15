@@ -9,6 +9,11 @@ data_folder_path = './'
 
 def get_file(game_id, folder_path):
     """
+    Input:
+    game_id: string, formed using the season,type and the game number
+    folder_path: destination path to save the JSON file with raw play data
+    Returns: List of dictionaries of all the games and downloads the JSON files at folder_path
+    
     Check if file is already downloaded.
         If yes, return the file path
         If not, check if it exists on the nhl api.
