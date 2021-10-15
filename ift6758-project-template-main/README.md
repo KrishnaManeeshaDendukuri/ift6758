@@ -8,8 +8,6 @@
 1. This section assumes that one is running the codebase from the repository folder.
 2. Taking the order of questions into account, it is important to understand that question 3, relies on getting the tidy data from the module for question 4, in order to fulfil the expectatins from this section of the project. To aid this, a file **tidy.csv** will be generated in [Question_4.ipynb](https://github.com/etiennedemers/ift6758/blob/master/ift6758-project-template-main/notebooks/Question_4.ipynb)
 
-Instructions required for any due installations can be found [here](https://github.com/etiennedemers/ift6758/tree/master/ift6758-project-template-main#readme).
-
 ## Instructions given 
 
 Included in this repo is an image of the NHL ice rink that you can use in your plots.
