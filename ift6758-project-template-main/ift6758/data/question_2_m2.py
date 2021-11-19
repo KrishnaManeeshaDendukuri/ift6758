@@ -153,11 +153,11 @@ def return_tidy_df(games, clear_games = True):
         home_players = 5
         away_players = 5
         penalties = {
-            'home_minor2_penalty_stack' : [20,40],
-            'home_minor4_penalty_stack' : [10],
+            'home_minor2_penalty_stack' : [],
+            'home_minor4_penalty_stack' : [],
             'home_major_penalty_stack' : [],
-            'away_minor2_penalty_stack' : [15],
-            'away_minor4_penalty_stack' : [5],
+            'away_minor2_penalty_stack' : [],
+            'away_minor4_penalty_stack' : [],
             'away_major_penalty_stack' : []
         }
         
