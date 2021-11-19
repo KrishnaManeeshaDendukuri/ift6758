@@ -129,7 +129,6 @@ def get_distance_from_net_and_side(df, net_distance_from_center = 89):
 
 
 def return_tidy_df(games, clear_games = True):
-    print('test')
 
     data = []
 
