@@ -149,7 +149,34 @@ def return_tidy_df(games, clear_games = True):
         
         previous_event = None
         
+        #initialize penalty info
+        home_players = 5
+        away_players = 5
+        penalties = {
+            'home_minor2_penalty_stack' : [],
+            'home_minor4_penalty_stack' : [],
+            'home_major_penalty_stack' : [],
+            'away_minor2_penalty_stack' : [],
+            'away_minor4_penalty_stack' : [],
+            'away_major_penalty_stack' : []
+        }
+        
         for event in events:
+            
+            event['time_seconds'] = (event['about']['period']-1)*20*60 + int(event['about']['periodTime'][0:2])*60 + int(event['about']['periodTime'][3:5])
+            
+            #update time remaining on penalties, remove penalties if they are over
+            if previous_event is not None: 
+                time_since_last_event = event['time_seconds'] - previous_event.get('time_seconds')
+
+                for key, penalty_stack in penalties.items():
+                    for penalty in range(len(penalty_stack)):
+                        penalty_stack[penalty] -= time_since_last_event
+                    penalties[key] = [penalty for penalty in penalty_stack if penalty>0]
+
+                # recompute the number of players on the ice
+                home_players = max(5 - len(penalties['home_minor2_penalty_stack']) - len(penalties['home_minor4_penalty_stack']) - len(penalties['home_major_penalty_stack']), 3)
+                away_players = max(5 - len(penalties['away_minor2_penalty_stack']) - len(penalties['away_minor4_penalty_stack']) - len(penalties['away_major_penalty_stack']), 3)
 
             event_type = event['result']['event']
 
@@ -175,7 +202,9 @@ def return_tidy_df(games, clear_games = True):
                 previous_event_type = previous_event['result']['event']
                 data.append([game_id, season, season_type, event_id, home_team, away_team, home_team_side_1st_period,
                              attacking_team, attacking_player, goalie, period, period_time, goal_ind,
-                             shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg,previous_event_x_coordinates,previous_event_y_coordinates,previous_event_period_time,previous_event_type,previous_event_period])
+                             shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg, 
+                             previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time, 
+                             previous_event_type, previous_event_period, home_players, away_players])
 
             elif event_type == 'Goal':
                 event_id = event['about']['eventIdx']
@@ -199,7 +228,64 @@ def return_tidy_df(games, clear_games = True):
                 previous_event_type = previous_event['result']['event']
                 data.append([game_id, season, season_type, event_id, home_team, away_team, home_team_side_1st_period,
                              attacking_team, attacking_player, goalie, period, period_time, goal_ind,
-                             shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg,previous_event_x_coordinates,previous_event_y_coordinates,previous_event_period_time,previous_event_type,previous_event_period])
+                             shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg, 
+                             previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time, 
+                             previous_event_type, previous_event_period, home_players, away_players])
+                
+                # update the penalties
+                if attacking_team == home_team:
+                    if (len(penalties['away_minor2_penalty_stack'])>0 and len(penalties['away_minor4_penalty_stack'])>0) :
+                        # when there is both a 2min minor and a 4min minor, we will assume the time is taken away from the penalty with the least time left
+                        if(penalties['away_minor2_penalty_stack'][0] < penalties['away_minor4_penalty_stack'][0]):
+                            penalties['away_minor2_penalty_stack'][0] = 0
+                        else:
+                            if penalties['away_minor4_penalty_stack'][0] > 120:
+                                penalties['away_minor4_penalty_stack'][0] = 120
+                            else:
+                                penalties['away_minor4_penalty_stack'][0] = 0
+                    elif len(penalties['away_minor2_penalty_stack'])>0:
+                        penalties['away_minor2_penalty_stack'][0] = 0
+                    elif len(penalties['away_minor4_penalty_stack'])>0:
+                        if penalties['away_minor4_penalty_stack'][0] > 120:
+                            penalties['away_minor4_penalty_stack'][0] = 120
+                        else:
+                            penalties['away_minor4_penalty_stack'][0] = 0
+                else:
+                    if (len(penalties['home_minor2_penalty_stack'])>0 and len(penalties['home_minor4_penalty_stack'])>0) :
+                        # when there is both a 2min minor and a 4min minor, we will assume the time is taken away from the penalty with the least time left
+                        if(penalties['home_minor2_penalty_stack'][0] < penalties['home_minor4_penalty_stack'][0]):
+                            penalties['home_minor2_penalty_stack'][0] = 0
+                        else:
+                            if penalties['home_minor4_penalty_stack'][0] > 120:
+                                penalties['home_minor4_penalty_stack'][0] = 120
+                            else:
+                                penalties['home_minor4_penalty_stack'][0] = 0
+                    elif len(penalties['home_minor2_penalty_stack'])>0:
+                        penalties['home_minor2_penalty_stack'][0] = 0
+                    elif len(penalties['home_minor4_penalty_stack'])>0:
+                        if penalties['home_minor4_penalty_stack'][0] > 120:
+                            penalties['home_minor4_penalty_stack'][0] = 120
+                        else:
+                            penalties['home_minor4_penalty_stack'][0] = 0
+            
+            elif event_type == 'Penalty':
+                if event['team']['name'] == home_team:
+                    if event['result']['penaltySeverity'] == 'Minor':
+                        if event['result']['penaltyMinutes'] == 2: 
+                            penalties['home_minor2_penalty_stack'].append(120)
+                        else:
+                            penalties['home_minor4_penalty_stack'].append(240)
+                    else:
+                        penalties['home_major_penalty_stack'].append(300)
+
+                else:
+                    if event['result']['penaltySeverity'] == 'Minor':
+                        if event['result']['penaltyMinutes'] == 2: 
+                            penalties['away_minor2_penalty_stack'].append(120)
+                        else:
+                            penalties['away_minor4_penalty_stack'].append(240)
+                    else:
+                        penalties['away_major_penalty_stack'].append(300)
     
             
             previous_event = event
@@ -207,7 +293,9 @@ def return_tidy_df(games, clear_games = True):
     df = pd.DataFrame(data,
                       columns=['game_id', 'season', 'season_type', 'event_id', 'home_team', 'away_team', 'home_team_side_1st_period',
                                'attacking_team', 'attacking_player', 'goalie', 'period', 'period_time','goal_ind',
-                               'shot_ind', 'x_coordinates', 'y_coordinates', 'shot_type', 'empty_net', 'strength', 'gwg','previous_event_x_coordinates','previous_event_y_coordinates','previous_event_period_time','previous_event_type','previous_event_period'])
+                               'shot_ind', 'x_coordinates', 'y_coordinates', 'shot_type', 'empty_net', 'strength', 'gwg',
+                               'previous_event_x_coordinates', 'previous_event_y_coordinates', 'previous_event_period_time',
+                               'previous_event_type', 'previous_event_period', 'home_players', 'away_players'])
 
     df = get_distance_from_net_and_side(df, net_distance_from_center = 89)
 

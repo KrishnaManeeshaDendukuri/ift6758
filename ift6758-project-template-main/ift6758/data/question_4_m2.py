@@ -9,8 +9,8 @@ def get_df(data):
     df = pd.read_csv(data)
     return df
 
-def get_new_features():
-    df = get_df(data)
+def get_new_features(data_frame):
+    df = data_frame
     df['game_seconds'] = df['period_time']
     df1 = df['game_seconds'].str.split(':',expand=True).astype(int)
     df['game_seconds'] = df1[0]*60+df1[1]
@@ -34,8 +34,8 @@ def get_new_features():
     
     return df
 
-def get_angle_change():
-    df = get_df(data)
+def get_angle_change(data_frame):
+    df = data_frame
     list_angle = []
     for index, row in df.iterrows():
         if row['previous_event_type']=='Shot':
@@ -69,7 +69,6 @@ def get_angle_change():
         else:
             list_angle.append(0)
             
-       
     df['change_in_angle'] = list_angle
     df['change_in_angle'] = df['change_in_angle'].round(decimals=2)
     
