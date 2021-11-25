@@ -239,7 +239,7 @@ def return_tidy_df(games, clear_games = True):
                 data.append([game_id, season, season_type, event_id, home_team, away_team, home_team_side_1st_period,
                              attacking_team, attacking_player, goalie, period, period_time, goal_ind,
                              shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg, 
-                             previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time, 
+                             previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time,
                              previous_event_type, previous_event_period, previous_attacking_team, home_players, away_players])
                 
                 # update the penalties
