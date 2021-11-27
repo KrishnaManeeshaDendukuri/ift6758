@@ -23,12 +23,12 @@ def get_new_features(data_frame):
     df['distance_from_last_event'] = np.sqrt((df['x_coordinates'] - df['previous_event_x_coordinates'])**2 + (df['y_coordinates'] - df['previous_event_y_coordinates'])**2)
     df['distance_from_last_event'] = df['distance_from_last_event'].round(decimals=2)
     df['distance_from_net'] = df['distance_from_net'].round(decimals=2)
-    rebound = np.empty(len(df.index),dtype=bool)
+    rebound = np.empty(len(df.index),dtype=int) 
     for index, row in df.iterrows():
         if row['previous_event_type']=='Shot':
-            rebound[index]=True
+            rebound[index]=1
         else:
-            rebound[index]=False
+            rebound[index]=0
     df['rebound'] = rebound.tolist()
     df['rebound_same_team'] = np.where(rebound & (df['attacking_team'] == df['previous_attacking_team']), 1, 0)
     df['home_team_attacking'] = np.where(df['attacking_team'] == df['home_team'], 1, 0)
@@ -67,7 +67,7 @@ def get_angle_change(data_frame):
                 if df.previous_event_y_coordinates[index] == 0:
                     list_angle.append(np.absolute(df.angle_from_net[index]))
                 else:
-                    distance_from_net = np.sqrt(df.previous_event_y_coordinates[index]**2+df.previous_event_x_coordinates[index]**2)
+                    distance_from_net = np.minimum(np.sqrt(df.previous_event_y_coordinates[index]**2+(df.previous_event_x_coordinates[index]+89)**2),np.sqrt(df.previous_event_y_coordinates[index]**2+(df.previous_event_x_coordinates[index]-89)**2))
                     angle = np.arcsin(df.previous_event_y_coordinates[index]/distance_from_net)*-180/math.pi
                     sign = np.sign([angle,df.angle_from_net[index]])
                     change_in_angle = 0
@@ -81,7 +81,7 @@ def get_angle_change(data_frame):
                 if df.previous_event_y_coordinates[index] == 0:
                     list_angle.append(np.absolute(df.angle_from_net[index]))
                 else:
-                    distance_from_net = np.sqrt(df.previous_event_y_coordinates[index]**2+df.previous_event_x_coordinates[index]**2)
+                    distance_from_net = np.minimum(np.sqrt(df.previous_event_y_coordinates[index]**2+(df.previous_event_x_coordinates[index]+89)**2),np.sqrt(df.previous_event_y_coordinates[index]**2+(df.previous_event_x_coordinates[index]-89)**2))
                     angle = np.arcsin(df.previous_event_y_coordinates[index]/distance_from_net)*180/math.pi
                     sign = np.sign([angle,df.angle_from_net[index]])
                     change_in_angle = 0
