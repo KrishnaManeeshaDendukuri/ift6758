@@ -3,12 +3,6 @@ import numpy as np
 import math
 import os
 
-data = "tidy_df.csv"
-
-def get_df(data):
-    df = pd.read_csv(data)
-    return df
-
 def get_new_features(data_frame):
     df = data_frame
     df['game_seconds'] = df['period_time']
