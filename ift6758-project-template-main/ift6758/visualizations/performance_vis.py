@@ -22,7 +22,6 @@ def roc_auc_plot(df_roc,df_auc):
     plt.figure(figsize=(12.5,7.5))
     lw = 3
     color_list = ['darkorange','green','navy','red']
-#     for i in range(len(list_model_iter)):
         
     plt.plot(df_roc.FPR[0], df_roc.TPR[0],color=color_list[0],lw=lw,label=f'{list_lables[0]} (area = {round(df_auc.AUC[0],3)})')
 
@@ -51,9 +50,7 @@ def goal_rate_plot(df_perc_prop,n_bins):
     
     color_list = ['darkorange','green','navy','red']
     
-#     for i in range(len(list_model_iter)):
-
-    ax2 = sns.lineplot(x = df_perc_prop.pctile[n_bins:n_bins-1], y = df_perc_prop.goal_rate[n_bins:n_bins-1], label=f'{list_lables[0]}', color=color_list[0], legend = False, linewidth = 3)
+    ax2 = sns.lineplot(x = df_perc_prop.pctile[:n_bins-1], y = df_perc_prop.goal_rate[:n_bins-1], label=f'{list_lables[0]}', color=color_list[0], legend = False, linewidth = 3)
     ax2.set_xlim(left=105, right=-5)
     ax2.set_ylim(bottom=0, top=1)
     plt.legend(fontsize=12)
@@ -79,7 +76,7 @@ def cum_rate_plot(df_perc_prop_cum,n_bins):
     fig = plt.figure(figsize=(12.5,7.5))
     color_list = ['darkorange','green','navy','red']
 
-    ax3 = sns.lineplot(x = df_perc_prop_cum.pctile[n_bins:n_bins-1], y = df_perc_prop_cum.cum_goal_rate[n_bins:n_bins-1], label=f'{list_lables[0]}', color=color_list[0], legend = False, linewidth = 3)
+    ax3 = sns.lineplot(x = df_perc_prop_cum.pctile[:n_bins-1], y = df_perc_prop_cum.cum_goal_rate[:n_bins-1], label=f'{list_lables[0]}', color=color_list[0], legend = False, linewidth = 3)
  
     ax3.set_xlim(left=105, right=-5)
     ax3.set_ylim(bottom=0, top=df_perc_prop_cum['cum_goal_rate'].max()+0.05)
@@ -88,7 +85,6 @@ def cum_rate_plot(df_perc_prop_cum,n_bins):
     plt.title(f"Cumulative Goal Rate v.s. Shot Probability Model Percentile", fontsize=18)
     plt.yticks(size = 12)
     plt.xticks(size = 12)
-#    plt.grid(color='r', linestyle='-', linewidth=0.25)
     plt.legend(fontsize=12)
     fig.savefig(f'Q{question_no}_Cum_Goal.png',bbox_inches = 'tight')
     '''
@@ -106,9 +102,7 @@ def calibration_plot(df_calib,n_bins):
     fig = plt.figure(figsize=(8, 8))
     ax4 = plt.subplot2grid((1, 1), (0, 0), rowspan=1)
     ax4.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
-#     for i in range(len(list_model_iter)):
-#     prob_true, prob_pred = calibration_curve(df_calib.goal_ind[int(i*length):int(length*(i+1)-1)], df_calib.Goal_Prob[int(i*length):int(length*(i+1)-1)], n_bins=n_bins)
-#        ax1.plot(prob_pred, prob_true, "s-",label=f'{str(df_auc.Feature[i])}')
+    
     prob_true, prob_pred = calibration_curve(df_calib.goal_ind, df_calib.Goal_Prob, n_bins=n_bins)
     ax4.plot(prob_pred, prob_true, "s-",label=list_lables[0])
 
