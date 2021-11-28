@@ -214,7 +214,7 @@ class Performance_Eval:
         #  Call for function to plot goal rate
         #----------------------------------------------------------------------------------------------- 
         self.df_perc_prop = pd.DataFrame(list(zip(goal_count,shot_count,goal_rate,pctile)),columns=['goal_count',"sum_shot_count",'goal_rate','pctile'])
-        goal_rate_plot(df_perc_prop = self.df_perc_prop,n_bins = self.n_bins, question_no = self.question_n)    
+        goal_rate_plot(df_perc_prop = self.df_perc_prop,n_bins = self.n_bins, question_no = self.question_no)    
         
     
     def get_cum_rate_plot(self, df_prob=None):
@@ -247,7 +247,7 @@ class Performance_Eval:
         #  Call for function to plot cumulative proportion 
         #----------------------------------------------------------------------------------------------- 
         self.df_perc_prop_cum = pd.DataFrame(list(zip(goal_count2,cum_goal_rate2,pctile2)),columns=['goal_count','cum_goal_rate','pctile'])
-        cum_rate_plot(self.df_perc_prop_cum, self.n_bins, question_no = self.question_n)
+        cum_rate_plot(self.df_perc_prop_cum, self.n_bins, question_no = self.question_no)
         
     
     def get_calibration_plot(self, df_prob=None):
@@ -261,7 +261,7 @@ class Performance_Eval:
         #  Call for function to plot calibration curve
         #----------------------------------------------------------------------------------------------- 
         self.df_calib = df_prob.copy()
-        calibration_plot(self.df_calib,n_bins, question_no = self.question_n)
+        calibration_plot(self.df_calib,n_bins, question_no = self.question_no)
     
 
 
