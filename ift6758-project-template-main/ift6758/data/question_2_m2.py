@@ -152,6 +152,8 @@ def return_tidy_df(games, clear_games = True):
         #initialize penalty info
         home_players = 5
         away_players = 5
+        time_since_powerplay_started = 0
+        
         penalties = {
             'home_minor2_penalty_stack' : [],
             'home_minor4_penalty_stack' : [],
@@ -177,6 +179,11 @@ def return_tidy_df(games, clear_games = True):
                 # recompute the number of players on the ice
                 home_players = max(5 - len(penalties['home_minor2_penalty_stack']) - len(penalties['home_minor4_penalty_stack']) - len(penalties['home_major_penalty_stack']), 3)
                 away_players = max(5 - len(penalties['away_minor2_penalty_stack']) - len(penalties['away_minor4_penalty_stack']) - len(penalties['away_major_penalty_stack']), 3)
+                
+                if (home_players == away_players):
+                    time_since_powerplay_started = 0
+                else:
+                    time_since_powerplay_started += time_since_last_event
 
             event_type = event['result']['event']
 
@@ -209,7 +216,8 @@ def return_tidy_df(games, clear_games = True):
                              attacking_team, attacking_player, goalie, period, period_time, goal_ind,
                              shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg, 
                              previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time, 
-                             previous_event_type, previous_event_period, previous_attacking_team, home_players, away_players])
+                             previous_event_type, previous_event_period, previous_attacking_team, home_players, away_players,
+                             time_since_powerplay_started])
 
             elif event_type == 'Goal':
                 event_id = event['about']['eventIdx']
@@ -240,7 +248,8 @@ def return_tidy_df(games, clear_games = True):
                              attacking_team, attacking_player, goalie, period, period_time, goal_ind,
                              shot_ind, x_coordinates, y_coordinates, shot_type, empty_net, strength, gwg, 
                              previous_event_x_coordinates, previous_event_y_coordinates, previous_event_period_time,
-                             previous_event_type, previous_event_period, previous_attacking_team, home_players, away_players])
+                             previous_event_type, previous_event_period, previous_attacking_team, home_players, away_players,
+                             time_since_powerplay_started])
                 
                 # update the penalties
                 if attacking_team == home_team:
@@ -305,7 +314,8 @@ def return_tidy_df(games, clear_games = True):
                                'attacking_team', 'attacking_player', 'goalie', 'period', 'period_time','goal_ind',
                                'shot_ind', 'x_coordinates', 'y_coordinates', 'shot_type', 'empty_net', 'strength', 'gwg',
                                'previous_event_x_coordinates', 'previous_event_y_coordinates', 'previous_event_period_time',
-                               'previous_event_type', 'previous_event_period', 'previous_attacking_team', 'home_players', 'away_players'])
+                               'previous_event_type', 'previous_event_period', 'previous_attacking_team', 'home_players', 'away_players',
+                               'time_since_powerplay_started'])
 
     df = get_distance_from_net_and_side(df, net_distance_from_center = 89)
 
