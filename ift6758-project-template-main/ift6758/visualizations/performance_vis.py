@@ -14,10 +14,8 @@ from sklearn.calibration import calibration_curve, CalibrationDisplay
 #######           PLOT FUNCTIONS        #######
 ###############################################
 
-### set question number for saving plots ###
-question_no = 5
 
-def roc_auc_plot(df_roc,df_auc):
+def roc_auc_plot(df_roc,df_auc, question_no = None):
     list_lables = ['XGBoost','Random Baseline']
     plt.figure(figsize=(12.5,7.5))
     lw = 3
@@ -44,7 +42,7 @@ def roc_auc_plot(df_roc,df_auc):
 #     experiment.log_figure(figure=plt, overwrite=False)
     plt.show()
     
-def goal_rate_plot(df_perc_prop,n_bins):
+def goal_rate_plot(df_perc_prop,n_bins, question_no = None):
     list_lables = ['XGBoost','Random Baseline']
     fig = plt.figure(figsize=(12.5,7.5))
     
@@ -71,7 +69,7 @@ def goal_rate_plot(df_perc_prop,n_bins):
 #     experiment.log_figure(figure=fig, overwrite=False)
 #     plt.show()
 
-def cum_rate_plot(df_perc_prop_cum,n_bins):
+def cum_rate_plot(df_perc_prop_cum,n_bins, question_no = None):
     list_lables = ['XGBoost','Random Baseline']
     fig = plt.figure(figsize=(12.5,7.5))
     color_list = ['darkorange','green','navy','red']
@@ -97,7 +95,7 @@ def cum_rate_plot(df_perc_prop_cum,n_bins):
     '''
 #     experiment.log_figure(figure=fig, overwrite=False)
 
-def calibration_plot(df_calib,n_bins):
+def calibration_plot(df_calib,n_bins, question_no = None):
     list_lables = ['XGBoost','Random Baseline']
     fig = plt.figure(figsize=(8, 8))
     ax4 = plt.subplot2grid((1, 1), (0, 0), rowspan=1)
@@ -134,7 +132,7 @@ def calibration_plot(df_calib,n_bins):
 #########################################################
 
 class Performance_Eval:
-    def __init__(self, model, X_train, y_train,X_valid,y_valid, n_bins = 20, quant = 5):
+    def __init__(self, model, X_train, y_train,X_valid,y_valid, n_bins = 20, quant = 5, question_no = None):
         self.n_bins = n_bins
         self.quant = quant 
         self.X_train = X_train
@@ -142,7 +140,7 @@ class Performance_Eval:
         self.X_valid = X_valid
         self.y_valid = y_valid
         self.model = model
-
+        self.question_no = question_no
         
     def infer_model(self):
         """
@@ -187,7 +185,7 @@ class Performance_Eval:
         #----------------------------------------------------------------------------------------------- 
         self.df_roc=pd.DataFrame(list(zip(fpr_list,tpr_list)),columns = ['FPR','TPR'])
         self.df_auc=pd.DataFrame(list(zip(feature_list,roc_auc_list)),columns = ['Feature','AUC'])
-        roc_auc_plot(self.df_roc,self.df_auc)
+        roc_auc_plot(self.df_roc,self.df_auc, question_no = self.question_no)
         
     def get_goal_rate_plot(self, df_prob=None):
         """
@@ -216,7 +214,7 @@ class Performance_Eval:
         #  Call for function to plot goal rate
         #----------------------------------------------------------------------------------------------- 
         self.df_perc_prop = pd.DataFrame(list(zip(goal_count,shot_count,goal_rate,pctile)),columns=['goal_count',"sum_shot_count",'goal_rate','pctile'])
-        goal_rate_plot(df_perc_prop = self.df_perc_prop,n_bins = self.n_bins)    
+        goal_rate_plot(df_perc_prop = self.df_perc_prop,n_bins = self.n_bins, question_no = self.question_n)    
         
     
     def get_cum_rate_plot(self, df_prob=None):
@@ -249,7 +247,7 @@ class Performance_Eval:
         #  Call for function to plot cumulative proportion 
         #----------------------------------------------------------------------------------------------- 
         self.df_perc_prop_cum = pd.DataFrame(list(zip(goal_count2,cum_goal_rate2,pctile2)),columns=['goal_count','cum_goal_rate','pctile'])
-        cum_rate_plot(self.df_perc_prop_cum, self.n_bins)
+        cum_rate_plot(self.df_perc_prop_cum, self.n_bins, question_no = self.question_n)
         
     
     def get_calibration_plot(self, df_prob=None):
@@ -263,7 +261,7 @@ class Performance_Eval:
         #  Call for function to plot calibration curve
         #----------------------------------------------------------------------------------------------- 
         self.df_calib = df_prob.copy()
-        calibration_plot(self.df_calib,n_bins)
+        calibration_plot(self.df_calib,n_bins, question_no = self.question_n)
     
 
 
@@ -271,7 +269,9 @@ class Performance_Eval:
 """
 #### USAGE ####
 
-perf_eval = Performance_Eval(model_2_cw, X_train_2, y_train_2, X_valid_2, y_valid_2)
+### set question number for saving plots ###
+question_no = 5
+perf_eval = Performance_Eval(model_2_cw, X_train_2, y_train_2, X_valid_2, y_valid_2, question_no = question_no)
 perf_eval.get_roc_auc_plot()
 perf_eval.get_goal_rate_plot()
 perf_eval.get_cum_rate_plot()
