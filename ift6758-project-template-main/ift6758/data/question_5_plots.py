@@ -17,7 +17,7 @@ from sklearn.calibration import calibration_curve, CalibrationDisplay
 
 experiment = Experiment(
     api_key=os.environ.get('COMET_API_KEY'),
-    project_name="random-forest",
+    project_name="models",
     workspace="kleitoun"
 )
 
@@ -36,14 +36,7 @@ def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     plt.title("ROC CURVE", fontsize=18)
     plt.yticks(size = 12)
     plt.xticks(size = 12)
-    plt.savefig(f'Q{question_no}_ROC.Curve.png',bbox_inches = 'tight')
-
-    # Create an experiment with your api key
-    # experiment = Experiment(
-    #     api_key="hPmHhia50l7Xqt8Y7HFQBoOVG",
-    #     project_name="milestone-2",
-    #     workspace="kleitoun",
-    # )
+    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_ROC_Curve.png',bbox_inches = 'tight')
     experiment.log_figure(figure=plt, overwrite=False)
     plt.show()
     
@@ -62,15 +55,7 @@ def goal_rate_plot(name,df_perc_prop,n_bins, question_no = None):
     plt.yticks(size = 12)
     plt.xticks(size = 12)
     plt.title(f"Goal Rate v.s. Shot Probability Model Percentile", fontsize=18)
-    plt.savefig(f'Q{question_no}_Goal_Rate.png',bbox_inches = 'tight')
-    
-    # Create an experiment with your api key
-    # experiment = Experiment(
-    #     api_key="hPmHhia50l7Xqt8Y7HFQBoOVG",
-    #     project_name="milestone-2",
-    #     workspace="kleitoun",
-    # )
-    
+    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Goal_Rate.png',bbox_inches = 'tight')
     experiment.log_figure(figure=fig, overwrite=False)
 #     plt.show()
 
@@ -89,15 +74,7 @@ def cum_rate_plot(name,df_perc_prop_cum,n_bins, question_no = None):
     plt.yticks(size = 12)
     plt.xticks(size = 12)
     plt.legend(fontsize=12)
-    fig.savefig(f'Q{question_no}_Cum_Goal.png',bbox_inches = 'tight')
-    
-    # Create an experiment with your api key
-    # experiment = Experiment(
-    #     api_key="hPmHhia50l7Xqt8Y7HFQBoOVG",
-    #     project_name="milestone-2",
-    #     workspace="kleitoun",
-    # )
-    
+    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Cum_Goal.png',bbox_inches = 'tight')
     experiment.log_figure(figure=fig, overwrite=False)
 
 def calibration_plot(name,df_calib,n_bins, question_no = None):
@@ -119,15 +96,7 @@ def calibration_plot(name,df_calib,n_bins, question_no = None):
     plt.xticks(size = 20)
     ax4.legend(loc="upper left", ncol=2)
     plt.tight_layout()
-    fig.savefig(f'Q{question_no}_Calibration_Curve.png',bbox_inches = 'tight')
-    
-    # Create an experiment with your api key
-    # experiment = Experiment(
-    #     api_key="hPmHhia50l7Xqt8Y7HFQBoOVG",
-    #     project_name="milestone-2",
-    #     workspace="kleitoun",
-    # )
-    
+    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Calibration_Curve.png',bbox_inches = 'tight')
     experiment.log_figure(figure=fig, overwrite=False)
     plt.show()
     experiment.end()
