@@ -30,12 +30,12 @@ def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     plt.title("ROC CURVE", fontsize=18)
     plt.yticks(size = 12)
     plt.xticks(size = 12)
-<<<<<<< Updated upstream
+# <<<<<<< Updated upstream
     plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}_{name}_ROC_Curve.png',bbox_inches = 'tight')
     plt.show()
-=======
+# =======
     fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_ROC_Curve.png',bbox_inches = 'tight')
->>>>>>> Stashed changes
+# >>>>>>> Stashed changes
     
     return fig
     
