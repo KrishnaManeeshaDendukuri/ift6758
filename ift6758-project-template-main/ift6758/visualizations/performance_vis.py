@@ -278,4 +278,60 @@ perf_eval.get_cum_rate_plot()
 perf_eval.get_calibration_plot()
 
 """
+
+
+def plot_model_performance(model_list,X_test, y_test):
+    """
+    model_list: list of dictionaries
+    X_test, y_test: Test dataframe, Label Series
+    returns a combined roc curve for all the models in the list
+    """
+    fig = plt.figure(figsize=(8, 8))
+    for m in model_list:
+        model = m['model'] # select the model
+        if(m["feature_subset"]):
+            y_pred=model.predict(X_test[m["feature_subset"]]) # predict the test data
+            # Compute False postive rate, and True positive rate
+            fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test[m["feature_subset"]])[:,1])
+            # Calculate Area under the curve to display on the plot
+            auc = roc_auc_score(y_test,model.predict(X_test[m["feature_subset"]]))
+            # Now, plot the computed values
+            plt.plot(fpr, tpr, label='%s ROC (area = %0.2f)' % (m['label'], auc))
+        else:
+            y_pred=model.predict(X_test) # predict the test data
+            # Compute False postive rate, and True positive rate
+            fpr, tpr, thresholds = roc_curve(y_test, model.predict_proba(X_test)[:,1])
+            # Calculate Area under the curve to display on the plot
+            auc = roc_auc_score(y_test,model.predict(X_test))
+            # Now, plot the computed values
+            plt.plot(fpr, tpr, label='%s ROC (area = %0.2f)' % (m['label'], auc))
+    # Custom settings for the plot 
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('1-Specificity(False Positive Rate)')
+    plt.ylabel('Sensitivity(True Positive Rate)')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+    plt.show()   
+    
+    return fig
+
+"""
+sample model_list:
+[
+{
+    'label': 'Gradient Boosting also',
+    'model':  pickle.load(open("XGBoost_Baseline_model.pickle", 'rb')),
+    'feature_subset': None
+
+},
+{
+    'label': 'Gradient Boosting',
+    'model':  pickle.load(open("XGBoost_hmtuning_model_v2.pickle", 'rb')),
+    'feature_subset': None
+
+}
+]
+"""
         
