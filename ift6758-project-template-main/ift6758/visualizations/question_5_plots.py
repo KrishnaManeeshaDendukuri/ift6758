@@ -17,7 +17,7 @@ from sklearn.calibration import calibration_curve, CalibrationDisplay
 
 def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     list_labels = [name,'Random Baseline']
-    plt.figure(figsize=(12.5,7.5))
+    fig = plt.figure(figsize=(12.5,7.5))
     lw = 3
     color_list = ['darkorange','green','navy','red']
         
@@ -30,10 +30,14 @@ def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     plt.title("ROC CURVE", fontsize=18)
     plt.yticks(size = 12)
     plt.xticks(size = 12)
-    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_ROC_Curve.png',bbox_inches = 'tight')
+<<<<<<< Updated upstream
+    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}_{name}_ROC_Curve.png',bbox_inches = 'tight')
     plt.show()
+=======
+    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_ROC_Curve.png',bbox_inches = 'tight')
+>>>>>>> Stashed changes
     
-    return plt
+    return fig
     
 def goal_rate_plot(name,df_perc_prop,n_bins, question_no = None):
     list_lables = [name,'Random Baseline']
@@ -50,7 +54,7 @@ def goal_rate_plot(name,df_perc_prop,n_bins, question_no = None):
     plt.yticks(size = 12)
     plt.xticks(size = 12)
     plt.title(f"Goal Rate v.s. Shot Probability Model Percentile", fontsize=18)
-    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Goal_Rate.png',bbox_inches = 'tight')
+    plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}_{name}_Goal_Rate.png',bbox_inches = 'tight')
     
     return fig
 
@@ -69,7 +73,7 @@ def cum_rate_plot(name,df_perc_prop_cum,n_bins, question_no = None):
     plt.yticks(size = 12)
     plt.xticks(size = 12)
     plt.legend(fontsize=12)
-    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Cum_Goal.png',bbox_inches = 'tight')
+    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}_{name}_Cum_Goal.png',bbox_inches = 'tight')
     
     return fig
 
@@ -92,7 +96,7 @@ def calibration_plot(name,df_calib,n_bins, question_no = None):
     plt.xticks(size = 20)
     ax4.legend(loc="upper left", ncol=2)
     plt.tight_layout()
-    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_Calibration_Curve.png',bbox_inches = 'tight')
+    fig.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}_{name}_Calibration_Curve.png',bbox_inches = 'tight')
     plt.show()
     return fig
 
