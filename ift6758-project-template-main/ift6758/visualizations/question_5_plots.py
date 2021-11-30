@@ -17,7 +17,7 @@ from sklearn.calibration import calibration_curve, CalibrationDisplay
 
 def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     list_labels = [name,'Random Baseline']
-    plt.figure(figsize=(12.5,7.5))
+    fig = plt.figure(figsize=(12.5,7.5))
     lw = 3
     color_list = ['darkorange','green','navy','red']
         
@@ -33,7 +33,7 @@ def roc_auc_plot(name,df_roc,df_auc, question_no = None):
     plt.savefig(f'../../ift6758-blog-template-main/figures/milestone2/Q{question_no}'+name+'_ROC_Curve.png',bbox_inches = 'tight')
     plt.show()
     
-    return plt
+    return fig
     
 def goal_rate_plot(name,df_perc_prop,n_bins, question_no = None):
     list_lables = [name,'Random Baseline']
