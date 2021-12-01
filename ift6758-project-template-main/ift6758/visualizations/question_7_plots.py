@@ -13,7 +13,7 @@ question_no = 7
 #######           ROC                   #######
 ###############################################
 
-def roc_auc_plot(df_roc,df_auc, question_no = question_no, n_models = 5,list_labels = None,games=None):
+def roc_auc_plot(df_roc,df_auc, question_no = question_no, n_models = 6,list_labels = None,games=None):
     # list_labels =  ["1","2","3","4"]
     fig = plt.figure(figsize=(12.5,7.5))
     lw = 3
@@ -66,7 +66,7 @@ def get_roc_auc_plot(df_prob,list_labels=None, question_no = question_no,games=N
 #######           Goal Rate             #######
 ###############################################
 
-def goal_rate_plot(df_perc_prop,n_bins, question_no = question_no, list_labels = None, n_models = 5,games=None):
+def goal_rate_plot(df_perc_prop,n_bins, question_no = question_no, list_labels = None, n_models = 6,games=None):
     from matplotlib import pyplot as plt
 
     fig = plt.figure(figsize=(12.5,7.5))
@@ -120,14 +120,14 @@ def get_goal_rate_plot(df_prob=None, n_bins = 20, quant = 5,list_labels = None, 
         #  Call for function to plot goal rate
         #----------------------------------------------------------------------------------------------- 
         df_perc_prop = pd.DataFrame(list(zip(goal_count,shot_count,goal_rate,pctile)),columns=['goal_count',"sum_shot_count",'goal_rate','pctile'])
-        fig = goal_rate_plot(df_perc_prop = df_perc_prop,n_bins = n_bins, question_no = question_no, list_labels = list_labels, n_models = 5,games=games)    
+        fig = goal_rate_plot(df_perc_prop = df_perc_prop,n_bins = n_bins, question_no = question_no, list_labels = list_labels, n_models = 6,games=games)    
         return fig
 
 ###############################################
 #######        Cumulative Goal Rate     #######
 ###############################################
 
-def cum_rate_plot(df_perc_prop_cum,n_bins, question_no = question_no, n_models= 5,list_labels = None,games=None):
+def cum_rate_plot(df_perc_prop_cum,n_bins, question_no = question_no, n_models= 6,list_labels = None,games=None):
     from matplotlib import pyplot as plt
 
     fig = plt.figure(figsize=(12.5,7.5))
@@ -186,13 +186,13 @@ def get_cum_rate_plot( df_prob=None, n_bins = 20, quant = 5,list_labels = None, 
         #  Call for function to plot cumulative proportion 
         #----------------------------------------------------------------------------------------------- 
         df_perc_prop_cum = pd.DataFrame(list(zip(goal_count2,cum_goal_rate2,pctile2)),columns=['goal_count','cum_goal_rate','pctile'])
-        fig = cum_rate_plot(df_perc_prop_cum, n_bins, question_no = question_no,n_models= 5,list_labels = list_labels,games=games)
+        fig = cum_rate_plot(df_perc_prop_cum, n_bins, question_no = question_no,n_models= 6,list_labels = list_labels,games=games)
         return fig
 
 ###############################################
 #######           Calibration Curve     #######
 ###############################################
-def calibration_plot(df_calib, n_bins, question_no = question_no, list_labels = None, n_models =5,games=None):
+def calibration_plot(df_calib, n_bins, question_no = question_no, list_labels = None, n_models =6,games=None):
     fig = plt.figure(figsize=(8, 8))
     ax1 = plt.subplot2grid((1, 1), (0, 0), rowspan=1)
     ax1.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
@@ -226,5 +226,5 @@ def get_calibration_plot(df_prob=None,n_bins = 20, question_no = question_no, li
         #  Call for function to plot calibration curve
         #----------------------------------------------------------------------------------------------- 
         df_calib = df_prob.copy()
-        fig = calibration_plot(df_calib,n_bins, question_no = question_no, list_labels = list_labels, n_models =5,games=games)
+        fig = calibration_plot(df_calib,n_bins, question_no = question_no, list_labels = list_labels, n_models =6,games=games)
         return fig
