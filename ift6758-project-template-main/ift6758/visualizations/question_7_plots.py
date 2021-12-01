@@ -7,7 +7,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 from sklearn.metrics import roc_curve, auc
 from sklearn.calibration import calibration_curve, CalibrationDisplay
-###### get_roc_auc_plot outside class is currently in use(down below)
+
+################################# get_roc_auc_plot outside class is currently in use(down below) ##########
 
 #### Usage indicated at the end of the script
 
