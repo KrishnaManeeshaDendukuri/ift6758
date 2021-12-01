@@ -4,7 +4,7 @@ The Project is based upon the national sport of Canada: Ice hockey! We use both 
 
 ## Milestone 2
 
-** Data Flow Diagram for the pipeline **
+#### Data Flow Diagram for the pipeline
 ![milestone_2_flow](milestone_2_flow.png)
 
 ## Milestone 1
