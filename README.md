@@ -2,6 +2,11 @@
 
 The Project is based upon the national sport of Canada: Ice hockey! We use both the aggregate and the play-by-play data captured by NHL API.
 
+## Milestone 2
+
+** Data Flow Diagram for the pipeline **
+![milestone_2_flow](milestone_2_flow.png)
+
 ## Milestone 1
 
 ### 1. Introduction
