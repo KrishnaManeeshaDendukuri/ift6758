@@ -16,6 +16,7 @@ import joblib
 from comet_ml import Experiment
 from comet_ml import API
 import pickle
+import xgboost
 
 
 import ift6758
@@ -35,8 +36,48 @@ def get_features(model_name):
         
     if model_name == 'kleitoun_lrda_1.0.0':
         features = ['distance_from_net', 'angle_from_net']
+        
+    if model_name == 'kleitoun_lda_1.0.0':
+        features = ['angle_from_net']
+        
+    if model_name == 'kleitoun_xgboost-tuning_1.0.0':
+        features = ['game_seconds', 'period', 'x_coordinates', 'y_coordinates',
+           'distance_from_net', 'angle_from_net', 'previous_event_type',
+           'previous_event_x_coordinates', 'previous_event_y_coordinates',
+           'time_since_last_event', 'distance_from_last_event', 'rebound',
+           'change_in_angle', 'speed', 'time_since_powerplay_started', '5v5',
+           '4v4', '3v3', '5v4', '5v3', '4v3', '4v5', '3v5', '3v4',
+           'shot_type_Backhand', 'shot_type_Deflected', 'shot_type_Slap Shot',
+           'shot_type_Snap Shot', 'shot_type_Tip-In', 'shot_type_Wrap-around',
+           'shot_type_Wrist Shot'
+        ]
+        
+    if model_name == 'chief_moth_9230_1.0.0':
+        features = ['home_players', 'away_players', 'time_since_powerplay_started', 
+            'distance_from_net', 'angle_from_net', 'game_seconds',
+            'previous_event_game_seconds', 'time_since_last_event', 'distance_from_last_event',
+            'rebound', 'rebound_same_team', 'home_team_attacking', 'overtime', 'speed', '5v5', 
+            '4v4', '3v3', '5v4', '5v3', '4v3', '4v5', '3v5', '3v4', 'power_play',
+            'penalty_kill', 'change_in_angle', 'shot_type_Backhand', 'shot_type_Deflected',
+            'shot_type_Slap Shot', 'shot_type_Snap Shot', 'shot_type_Tip-In',
+            'shot_type_Wrap-around'
+        ]
     
     return features
+
+def rename_model_file(model_name):
+    
+    if model_name == 'kleitoun_lrd_1.0.0':
+        os.rename(f'LogisticRegression_distance', model_name)
+        
+    if model_name == 'kleitoun_lrda_1.0.0':
+        os.rename(f'LogisticRegression_distance+angle', model_name)
+        
+    if model_name == 'kleitoun_lra_1.0.0':
+        os.rename(f'LogisticRegression_angle', model_name)
+    
+    if model_name == 'kleitoun_xgboost-tuning_1.0.0':
+        os.rename(f'XGBoost_hmtuning_model_v2.pickle', model_name)
 
 
 @app.before_first_request
@@ -118,13 +159,13 @@ def download_registry_model():
     global model_name
     model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
     model_file = Path(f"{model_name}")
- 
+    print(model_name)
     
     if not model_file.is_file():
         api = API(key)
         api.download_registry_model(json['workspace'], json['model'], json['version'], output_path="./", expand=True)
         rename_model_file(model_name)
-        
+        print('aaa')
         
     global model
     model = pickle.load(open(model_name, 'rb'))
