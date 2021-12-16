@@ -159,13 +159,11 @@ def download_registry_model():
     global model_name
     model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
     model_file = Path(f"{model_name}")
-    print(model_name)
     
     if not model_file.is_file():
         api = API(key)
         api.download_registry_model(json['workspace'], json['model'], json['version'], output_path="./", expand=True)
         rename_model_file(model_name)
-        print('aaa')
         
     global model
     model = pickle.load(open(model_name, 'rb'))
