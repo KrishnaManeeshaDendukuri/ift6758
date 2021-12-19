@@ -16,15 +16,16 @@ import joblib
 from comet_ml import Experiment
 from comet_ml import API
 import pickle
-import xgboost
+# import xgboost
+
 
 import ift6758
 
 
 #LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
 LOG_FILE = "flask.log"
-key = "PeZE4vLrXZR7BuQTNrIYRlRF9"
-
+# key = "PeZE4vLrXZR7BuQTNrIYRlRF9"
+COMET_API_KEY = os.environ.get("COMET_API_KEY")
 
 app = Flask(__name__)
 
@@ -36,7 +37,7 @@ def get_features(model_name):
     if model_name == 'kleitoun_lrda_1.0.0':
         features = ['distance_from_net', 'angle_from_net']
         
-    if model_name == 'kleitoun_lra_1.0.0':
+    if model_name == 'kleitoun_lda_1.0.0':
         features = ['angle_from_net']
         
     if model_name == 'kleitoun_xgboost-tuning_1.0.0':
@@ -50,7 +51,18 @@ def get_features(model_name):
            'shot_type_Snap Shot', 'shot_type_Tip-In', 'shot_type_Wrap-around',
            'shot_type_Wrist Shot'
         ]
-
+        
+    if model_name == 'chief_moth_9230_1.0.0':
+        features = ['home_players', 'away_players', 'time_since_powerplay_started', 
+            'distance_from_net', 'angle_from_net', 'game_seconds',
+            'previous_event_game_seconds', 'time_since_last_event', 'distance_from_last_event',
+            'rebound', 'rebound_same_team', 'home_team_attacking', 'overtime', 'speed', '5v5', 
+            '4v4', '3v3', '5v4', '5v3', '4v3', '4v5', '3v5', '3v4', 'power_play',
+            'penalty_kill', 'change_in_angle', 'shot_type_Backhand', 'shot_type_Deflected',
+            'shot_type_Slap Shot', 'shot_type_Snap Shot', 'shot_type_Tip-In',
+            'shot_type_Wrap-around'
+        ]
+    
     return features
 
 def rename_model_file(model_name):
@@ -82,7 +94,7 @@ def before_first_request():
         pass
 
     # TODO: any other initialization before the first request (e.g. load default model)
-    api = API(key)
+    api = API(COMET_API_KEY)
     
     # download default model if it is not already downloaded
     json = {'workspace': 'kleitoun', 'model': 'lrd', 'version': '1.0.0'}
@@ -147,11 +159,13 @@ def download_registry_model():
     global model_name
     model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
     model_file = Path(f"{model_name}")
+    print(model_name)
     
     if not model_file.is_file():
-        api = API(key)
+        api = API(COMET_API_KEY)
         api.download_registry_model(json['workspace'], json['model'], json['version'], output_path="./", expand=True)
         rename_model_file(model_name)
+        print('aaa')
         
     global model
     model = pickle.load(open(model_name, 'rb'))
@@ -178,21 +192,10 @@ def predict():
     features = get_features(model_name)
     #X = np.array([[json[feature] for feature in features]])
     X = pd.DataFrame(json)[features]
-    
-    if model_name == 'kleitoun_xgboost-tuning_1.0.0':
-        le_name_mapping = {
-            'Blocked Shot': 0, 'Faceoff': 1, 'Game Official': 2, 'Giveaway': 3, 'Goal': 4, 
-            'Hit': 5, 'Missed Shot': 6, 'Official Challenge': 7, 'Penalty': 8, 
-            'Period End': 9, 'Period Official': 10, 'Period Ready': 11, 'Period Start': 12,
-            'Shootout Complete': 13, 'Shot': 14, 'Stoppage': 15, 'Takeaway': 16
-        }
-        X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
-
-    
     response = model.predict_proba(X)
 
     app.logger.info(response)
     return jsonify(response.tolist())  # response must be json serializable!
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
