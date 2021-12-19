@@ -6,11 +6,11 @@ services:
     build:
       context: ./
       dockerfile: ./Dockerfile.serving
-#      args:
-#        ARG: <ARG>
-#    image: ift6758/serving:<TAG>
-#    ports:
-#      - <SERVING_PORT>:<SERVING_PORT>
+    #  args:
+    #    ARG: <ARG>
+    image: ift6758/serving:model-serving
+    ports:
+     - 5000:5000
 #    environment:
 #      DOCKER_ENV_VAR = ${LOCAL_ENV_VAR}
 ###### Uncomment below when you're ready to add the final notebook container to your docker compose
