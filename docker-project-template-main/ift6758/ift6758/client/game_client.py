@@ -33,6 +33,9 @@ class GameClient:
         previous_event = None
         for event in events:
             if event['result']['event'] == 'Shot' or event['result']['event'] == 'Goal':
+                current_period = event['about'].get('period')
+                current_time = event['about'].get('periodTime')
+                remaining_time = event['about'].get('periodTimeRemaining')
                 x_coordinates = event['coordinates'].get('x')
                 y_coordinates = event['coordinates'].get('y')
                 if previous_event == None:
@@ -41,9 +44,9 @@ class GameClient:
                 else:
                     previous_event_x_coordinates = previous_event['coordinates'].get('x')
                     previous_event_y_coordinates = previous_event['coordinates'].get('y')
-                game.append([x_coordinates, y_coordinates,previous_event_x_coordinates, previous_event_y_coordinates])
+                game.append([x_coordinates, y_coordinates,previous_event_x_coordinates, previous_event_y_coordinates,current_period,current_time,remaining_time])
                 previous_event = event
-        game = pd.DataFrame(game, columns=['x_coordinates', 'y_coordinates', 'previous_event_x_coordinates', 'previous_event_y_coordinates'])
+        game = pd.DataFrame(game, columns=['x_coordinates', 'y_coordinates', 'previous_event_x_coordinates', 'previous_event_y_coordinates','current_period','current_time','remaining_time'])
         return game
 
     def update_tracker(self):
