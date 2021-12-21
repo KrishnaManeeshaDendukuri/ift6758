@@ -6,7 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-df = pd.read_csv('../ift6758-project-template-main/notebooks/final_df.csv')
+# df = pd.read_csv('../ift6758-project-template-main/notebooks/final_df.csv')
 
 class ServingClient:
     def __init__(self, ip: str = "0.0.0.0", port: int = 5000, features=None):
@@ -31,11 +31,12 @@ class ServingClient:
         logger.info(f"Initializing request to generate predictions")
         r = requests.post(
             "http://127.0.0.1:5000/predict", 
-            json=json.loads(df.iloc[0:5].to_json())
+            json=json.loads(X.to_json())
         )
         logger.info(f"Successfully generated predictions")
         return r.json()
         # raise NotImplementedError("TODO: implement this function")
+        # logegr.info()
 
     def logs(self) -> dict:
         """Get server logs"""
@@ -65,9 +66,14 @@ class ServingClient:
             version (str): The model version to download
         """
         logger.info(f"Initializing request to download the model{model}-{version}")
+        self.workspace = workspace
+        self.model = model
+        self.version = version
+        self.model_filename = f"{workspace}_{model}_{version}"
         r = requests.post(
             "http://127.0.0.1:5000/download_registry_model", 
             json= {'workspace': workspace, 'model': model, 'version': version}
         )
         logger.info(f"Successfully Downloaded Model")
+        # return r.json()
 
