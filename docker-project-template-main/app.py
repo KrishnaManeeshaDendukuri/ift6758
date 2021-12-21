@@ -183,13 +183,13 @@ def predict():
     X = pd.DataFrame(json)[features]
     
     if model_name == 'kleitoun_xgboost-tuning_1.0.0':
-    le_name_mapping = {
-        'Blocked Shot': 0, 'Faceoff': 1, 'Game Official': 2, 'Giveaway': 3, 'Goal': 4, 
-        'Hit': 5, 'Missed Shot': 6, 'Official Challenge': 7, 'Penalty': 8, 
-        'Period End': 9, 'Period Official': 10, 'Period Ready': 11, 'Period Start': 12,
-        'Shootout Complete': 13, 'Shot': 14, 'Stoppage': 15, 'Takeaway': 16
-    }
-    X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
+        le_name_mapping = {
+            'Blocked Shot': 0, 'Faceoff': 1, 'Game Official': 2, 'Giveaway': 3, 'Goal': 4, 
+            'Hit': 5, 'Missed Shot': 6, 'Official Challenge': 7, 'Penalty': 8, 
+            'Period End': 9, 'Period Official': 10, 'Period Ready': 11, 'Period Start': 12,
+            'Shootout Complete': 13, 'Shot': 14, 'Stoppage': 15, 'Takeaway': 16
+        }
+        X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
 
     response = model.predict_proba(X)
 
