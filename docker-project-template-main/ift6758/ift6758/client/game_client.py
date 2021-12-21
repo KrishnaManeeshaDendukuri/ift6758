@@ -29,6 +29,8 @@ class GameClient:
         game = []
         with open(file_path,'r') as f:
             events = json.load(f)
+        self.home_team = events['gameData']['teams']['home']['name']
+        self.away_team = events['gameData']['teams']['away']['name']
         events = events['liveData']['plays']['allPlays']
         previous_event = None
         for event in events:
@@ -36,6 +38,11 @@ class GameClient:
                 current_period = event['about'].get('period')
                 current_time = event['about'].get('periodTime')
                 remaining_time = event['about'].get('periodTimeRemaining')
+                # shot_by_team = event['team']['name']
+                if event['team'].get('name') == home_team:
+                    shot_by_team = "Home"
+                else:
+                    shot_by_team = "Away"
                 x_coordinates = event['coordinates'].get('x')
                 y_coordinates = event['coordinates'].get('y')
                 if previous_event == None:
@@ -44,9 +51,9 @@ class GameClient:
                 else:
                     previous_event_x_coordinates = previous_event['coordinates'].get('x')
                     previous_event_y_coordinates = previous_event['coordinates'].get('y')
-                game.append([x_coordinates, y_coordinates,previous_event_x_coordinates, previous_event_y_coordinates,current_period,current_time,remaining_time])
+                game.append([x_coordinates, y_coordinates,previous_event_x_coordinates, previous_event_y_coordinates,current_period,current_time,remaining_time,shot_by_team])
                 previous_event = event
-        game = pd.DataFrame(game, columns=['x_coordinates', 'y_coordinates', 'previous_event_x_coordinates', 'previous_event_y_coordinates','current_period','current_time','remaining_time'])
+        game = pd.DataFrame(game, columns=['x_coordinates', 'y_coordinates', 'previous_event_x_coordinates', 'previous_event_y_coordinates','current_period','current_time','remaining_time','shot_by_team'])
         return game
 
     def update_tracker(self):
