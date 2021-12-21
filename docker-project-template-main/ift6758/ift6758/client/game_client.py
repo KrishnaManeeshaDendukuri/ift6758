@@ -89,7 +89,8 @@ class GameClient:
                     previous_event_y_coordinates = previous_event['coordinates'].get('y')
                     previous_event_period_time = previous_event['about']['periodTime']
                     previous_event_period = previous_event['about']['period']
-                    time_since_last_event = game_seconds - ((previous_event_period-1)*20*60 + previous_event_period_time*60)previous_event_type = previous_event['result']['event']
+                    time_since_last_event = game_seconds - ((previous_event_period-1)*20*60 + previous_event_period_time*60)
+                    previous_event_type = previous_event['result']['event']
                 distance_from_last_event = np.sqrt((x_coordinates**2 - previous_event_x_coordinates**2)+(y_coordinates**2 - previous_event_y_coordinates**2))
                 speed = distance_from_last_event / time_since_last_event
                 if previous_event['result']['event'] == 'Shot' or previous_event['result']['event'] == 'Goal':
