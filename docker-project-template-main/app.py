@@ -208,7 +208,7 @@ def predict():
         app.logger.info(f'Finished computing goal probabilities. For each event, the first returned number is the probability of a non-goal and the second number is the probability of a goal.')
     except: 
         response=None
-        app.logger.warning(f'failed to compute predictions. This may be because the loaded model is not recognised by the function {get_features}.') 
+        app.logger.warning(f'failed to compute predictions. This may be because the loaded model is not recognised by the function get_features.') 
 
     app.logger.info(response)
     return jsonify(response.tolist())  # response must be json serializable!
