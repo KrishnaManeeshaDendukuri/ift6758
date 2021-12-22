@@ -16,15 +16,11 @@ import joblib
 from comet_ml import Experiment
 from comet_ml import API
 import pickle
-# import xgboost
-
 
 import ift6758
 
 
-#LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
-LOG_FILE = "flask.log"
-# key = "PeZE4vLrXZR7BuQTNrIYRlRF9"
+LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
 COMET_API_KEY = os.environ.get("COMET_API_KEY")
 
 app = Flask(__name__)
@@ -53,6 +49,7 @@ def get_features(model_name):
         ]
     
     return features
+
 
 def rename_model_file(model_name):
     
@@ -86,8 +83,11 @@ def before_first_request():
     api = API(COMET_API_KEY)
     
     # download default model if it is not already downloaded
-    json = {'workspace': 'kleitoun', 'model': 'lrd', 'version': '1.0.0'}
     global model_name
+    global model
+    
+    json = {'workspace': 'kleitoun', 'model': 'lrd', 'version': '1.0.0'}
+    
     model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
     model_file = Path(f"{model_name}")
     
@@ -96,12 +96,11 @@ def before_first_request():
         # rename model file to the same name as in the api.get() call
         # this will allow us to detect if a model has already been downloaded by looking at the file name
         rename_model_file(model_name)
-        
-    global model
-    model = pickle.load(open(model_name, 'rb'))
-
-    app.logger.info('succesfully loaded default model')
-    pass
+        model = pickle.load(open(model_name, 'rb'))
+        app.logger.info(f'succesfully downloaded and loaded default model ({model_name})')
+    else:
+        model = pickle.load(open(model_name, 'rb'))
+        app.logger.info(f'succesfully loaded default model ({model_name})')
 
 
 @app.route("/logs", methods=["GET"])
@@ -146,21 +145,35 @@ def download_registry_model():
     # logic and querying of the CometML servers away to keep it clean here
 
     global model_name
-    model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
-    model_file = Path(f"{model_name}")
-    print(model_name)
-    
-    if not model_file.is_file():
-        api = API(COMET_API_KEY)
-        api.download_registry_model(json['workspace'], json['model'], json['version'], output_path="./", expand=True)
-        rename_model_file(model_name)
-        print('aaa')
-        
     global model
-    model = pickle.load(open(model_name, 'rb'))
+    
+    current_model_name = model_name
+    current_model = model
+    
+    new_model_name = f'{json["workspace"]}_{json["model"]}_{json["version"]}'
+    model_file = Path(f"{new_model_name}")
+    
+    if model_file.is_file():
+        
+        model_name = new_model_name
+        model = pickle.load(open(model_name, 'rb'))
+        
+        app.logger.info(f'successfully loaded model {model_name}')
+
+    else:
+        api = API(COMET_API_KEY)
+        try:
+            api.download_registry_model(json['workspace'], json['model'], json['version'], output_path="./", expand=True)
+            rename_model_file(new_model_name)
+            assert model_file.is_file()
+            model_name = new_model_name
+            model = pickle.load(open(model_name, 'rb'))
+            app.logger.info(f'successfully downloaded and loaded model {model_name}')
+            
+        except:
+            app.logger.warning(f'Failed to download model {new_model_name}. This is probably because this model does not exists, or because it is not recognised by the rename_model_file function. The application will keep using the currently loaded model ({current_model_name}).')
     
     response = None
-
     app.logger.info(response)
     return jsonify(response) 
 
@@ -177,24 +190,29 @@ def predict():
 
     # TODO:
     
-
-    features = get_features(model_name)
-    #X = np.array([[json[feature] for feature in features]])
-    X = pd.DataFrame(json)[features]
+    app.logger.info(f'computing goal probabilities for provided events using model {model_name}')
     
-    if model_name == 'kleitoun_xgboost-tuning_1.0.0':
-        le_name_mapping = {
-            'Blocked Shot': 0, 'Faceoff': 1, 'Game Official': 2, 'Giveaway': 3, 'Goal': 4, 
-            'Hit': 5, 'Missed Shot': 6, 'Official Challenge': 7, 'Penalty': 8, 
-            'Period End': 9, 'Period Official': 10, 'Period Ready': 11, 'Period Start': 12,
-            'Shootout Complete': 13, 'Shot': 14, 'Stoppage': 15, 'Takeaway': 16
-        }
-        X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
+    try:
+        features = get_features(model_name)
+        X = pd.DataFrame(json)[features]
+        if model_name == 'kleitoun_xgboost-tuning_1.0.0':
+            le_name_mapping = {
+                'Blocked Shot': 0, 'Faceoff': 1, 'Game Official': 2, 'Giveaway': 3, 'Goal': 4, 
+                'Hit': 5, 'Missed Shot': 6, 'Official Challenge': 7, 'Penalty': 8, 
+                'Period End': 9, 'Period Official': 10, 'Period Ready': 11, 'Period Start': 12,
+                'Shootout Complete': 13, 'Shot': 14, 'Stoppage': 15, 'Takeaway': 16
+            }
+            X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
 
-    response = model.predict_proba(X)
+        response = model.predict_proba(X)
+        app.logger.info(f'Finished computing goal probabilities. For each event, the first returned number is the probability of a non-goal and the second number is the probability of a goal.')
+    except: 
+        response=None
+        app.logger.warning(f'failed to compute predictions. This may be because the loaded model is not recognised by the function {get_features}.') 
 
     app.logger.info(response)
     return jsonify(response.tolist())  # response must be json serializable!
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
