@@ -7,26 +7,29 @@ import numpy as np
 import math 
 
 class GameClient:
-    def __init__(self,game_id):
+    def __init__(self, game_id):
         self.game_id = game_id
         self.tracker = 0
         self.game = pd.DataFrame(columns=['x_coordinates', 'y_coordinates', 'previous_event_x_coordinates', 'previous_event_y_coordinates','current_period','current_time','remaining_time'])
         
-    def get_game(self):
+    def get_game(self, game_id):
+        self.game_id = game_id
         file_path = './' + str(self.game_id) + '.json'
         file = str(self.game_id) + '.json'
         data = requests.get(f'https://statsapi.web.nhl.com/api/v1/game/{self.game_id}/feed/live/')
+        print(f'https://statsapi.web.nhl.com/api/v1/game/{self.game_id}/feed/live/')
         if (data.status_code == 404):
             return None
         with open(file_path, 'w') as f:
             json.dump(data.json(), f)
-        
+        print(file_path)
         return file_path
 
 
     def update_events(self):
-        file_path = './' + str(self.game_id) + '.json'
+        file_path =  self.get_game(game_id = self.game_id) #'./' + str(self.game_id) + '.json'
         game = []
+        print(file_path)
         with open(file_path,'r') as f:
             events = json.load(f)
         self.home_team = events['gameData']['teams']['home']['name']
@@ -63,7 +66,7 @@ class GameClient:
     def features_for_models(self,model):
         if model == 'lrd':
             temp = self.game['distance_from_net']
-            return temp.loc[self.tracker:,:]
+            return pd.DataFrame(temp.loc(axis=0)[self.tracker:], columns = ["distance_from_net"])
         
         if model == 'lrda':
             temp = self.game[['distance_from_net','angle_from_net']]
@@ -71,7 +74,7 @@ class GameClient:
         
         if model == 'lda':
             temp = self.game['angle_from_net']
-            return temp.loc[self.tracker:,:]
+            return pd.DataFrame(temp.loc(axis=0)[self.tracker:], columns = ["angle_from_net"])
     
     def features_for_dashboard(self):
         temp = self.game
