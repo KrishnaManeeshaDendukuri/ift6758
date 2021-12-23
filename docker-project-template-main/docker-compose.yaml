@@ -8,11 +8,11 @@ services:
       dockerfile: ./Dockerfile.serving
     #  args:
     #    ARG: <ARG>
-    image: ift6758/serving:modelserving7
+    image: ift6758/serving:modelserving8
     ports:
      - 5000:5000
-  #  environment:
-  #    COMET_API_KEY = ${COMET_API_KEY}
+    environment:
+     - COMET_API_KEY = ${COMET_API_KEY}
 ###### Uncomment below when you're ready to add the final notebook container to your docker compose
   jupyter:
     build:
@@ -20,11 +20,14 @@ services:
       dockerfile: ./Dockerfile.jupyter
       # args:
       #   ARG: <ARG>
-    image: ift6758/jupyter:dashboard7
+    image: ift6758/jupyter:dashboard8
     ports:
       - 8889:8889
-    # environment:
-    #   OTHER_DOCKER_ENV_VAR = ${OTHER_LOCAL_ENV_VAR}
+    environment:
+      - COMET_API_KEY = ${COMET_API_KEY}
       
+
+     
+
 
      
