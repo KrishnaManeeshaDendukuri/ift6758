@@ -204,11 +204,11 @@ def predict():
             }
             X["previous_event_type"] = X["previous_event_type"].replace(le_name_mapping)
 
-        response = model.predict_proba(X)
-        app.logger.info(f'Finished computing goal probabilities. For each event, the first returned number is the probability of a non-goal and the second number is the probability of a goal.')
+        response = model.predict_proba(X)[:,1]
+        app.logger.info(f'Finished computing goal probabilities.')
     except: 
         response=None
-        app.logger.warning(f'failed to compute predictions. This may be because the loaded model is not recognised by the function get_features.') 
+        app.logger.warning(f'Failed to compute predictions. This may be because the loaded model is not recognised by the function get_features.') 
 
     app.logger.info(response)
     return jsonify(response.tolist())  # response must be json serializable!
