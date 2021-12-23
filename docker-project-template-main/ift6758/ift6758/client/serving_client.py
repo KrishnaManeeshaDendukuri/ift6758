@@ -29,12 +29,16 @@ class ServingClient:
             X (Dataframe): Input dataframe to submit to the prediction service.
         """
         logger.info(f"Initializing request to generate predictions")
-        r = requests.post(
-            "http://127.0.0.1:5000/predict", 
-            json=json.loads(X.to_json())
-        )
-        logger.info(f"Successfully generated predictions")
-        return r.json()
+        try:
+            r = requests.post(
+                f"{self.base_url}/predict", 
+                json=json.loads(X.to_json())
+            )
+            logger.info(f"Successfully generated predictions")
+            return r.json()
+        except Exception as e:
+            print(e)
+            return None
         # raise NotImplementedError("TODO: implement this function")
         # logegr.info()
 
@@ -42,13 +46,11 @@ class ServingClient:
         """Get server logs"""
         logger.info(f"Initializing request to server get logs")
         r = requests.post(
-            "http://127.0.0.1:5000/download_registry_model", 
-            json= {'workspace': 'kleitoun', 'model': 'lrda', 'version': '1.0.0'}
+            f"{self.base_url}/logs", 
+            json= {'workspace': self.workspace, 'model': self.model, 'version': self.version}
         )
         logger.info(f"Server Logs fetched")
         return r.json()
-
-
 
     def download_registry_model(self, workspace: str, model: str, version: str) -> dict:
         """
@@ -71,7 +73,7 @@ class ServingClient:
         self.version = version
         self.model_filename = f"{workspace}_{model}_{version}"
         r = requests.post(
-            "http://127.0.0.1:5000/download_registry_model", 
+            f"{self.base_url}/download_registry_model", 
             json= {'workspace': workspace, 'model': model, 'version': version}
         )
         logger.info(f"Successfully Downloaded Model")
