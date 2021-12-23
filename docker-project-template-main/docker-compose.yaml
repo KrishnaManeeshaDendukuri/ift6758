@@ -8,7 +8,7 @@ services:
       dockerfile: ./Dockerfile.serving
     #  args:
     #    ARG: <ARG>
-    image: ift6758/serving:model-serving
+    image: ift6758/serving:modelserving7
     ports:
      - 5000:5000
   #  environment:
@@ -20,7 +20,7 @@ services:
       dockerfile: ./Dockerfile.jupyter
       # args:
       #   ARG: <ARG>
-    image: ift6758/jupyter:jupyter-dashboard2
+    image: ift6758/jupyter:dashboard7
     ports:
       - 8889:8889
     # environment:
