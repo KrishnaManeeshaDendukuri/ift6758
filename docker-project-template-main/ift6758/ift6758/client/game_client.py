@@ -8,14 +8,17 @@ import math
 from sklearn.preprocessing import LabelEncoder
 
 class GameClient:
-    def __init__(self,game_id):
-        self.game_id = game_id
+    def __init__(self):
+        self.game_id = 0
         self.tracker = 0
         self.game = None
         self.home_team = None
         self.away_team = None
+        self.time_left = float('inf')
+        self.current_period = 0
         
-    def get_game(self):
+    def get_game(self,game_id):
+        self.game_id = game_id
         file_path = './' + str(self.game_id) + '.json'
         file = str(self.game_id) + '.json'
         data = requests.get(f'https://statsapi.web.nhl.com/api/v1/game/{self.game_id}/feed/live/')
@@ -26,9 +29,8 @@ class GameClient:
         
         return file_path
 
-
     def update_events(self):
-        file_path = self.get_game()
+        file_path = self.get_game(self.game_id)
         attributes = []
         with open(file_path,'r') as f:
             game = json.load(f)
@@ -50,9 +52,10 @@ class GameClient:
         }
         
         for event in events:
+            self.time_left = event['about'].get('periodTimeRemaining')
+            self.current_period = event['about'].get('period')
             event['time_seconds'] = (event['about']['period']-1)*20*60 + int(event['about']['periodTime'][0:2])*60 + int(event['about']['periodTime'][3:5])
             
-            #update time remaining on penalties, remove penalties if they are over
             if previous_event is not None: 
                 time_since_last_event = event['time_seconds'] - previous_event.get('time_seconds')
 
@@ -79,7 +82,7 @@ class GameClient:
                 period_time = event['about']['periodTime']
                 var = period_time.split(':')
                 period_time = int(var[0])*60+int(var[1])
-                time_left = 20*60 - period_time*60
+                remaining_time = 20*60 - period_time
                 game_seconds = (period-1)*20*60 + period_time*60
                 shot_type = event['result'].get('secondaryType')
                 if event['team'].get('name') == self.home_team:
@@ -114,7 +117,7 @@ class GameClient:
                 else: 
                     rebound = 0
 
-                attributes.append([x_coordinates, y_coordinates,period,period_time,previous_event_type,previous_event_x_coordinates, previous_event_y_coordinates,previous_event_period_time,previous_event_period,rebound,self.home_team,self.away_team,shot_type,attacking_team,game_seconds,speed,distance_from_last_event,home_players,away_players,time_since_powerplay_started,time_left,attacking_team_side,time_since_last_event,shot_by_team])
+                attributes.append([x_coordinates, y_coordinates,period,period_time,previous_event_type,previous_event_x_coordinates, previous_event_y_coordinates,previous_event_period_time,previous_event_period,rebound,self.home_team,self.away_team,shot_type,attacking_team,game_seconds,speed,distance_from_last_event,home_players,away_players,time_since_powerplay_started,remaining_time,attacking_team_side,time_since_last_event,shot_by_team])
                 
             if event['result']['event'] == 'Goal':
                 if event['team']['name'] == self.home_team:
@@ -172,11 +175,9 @@ class GameClient:
                         penalties['away_major_penalty_stack'].append(300)
     
             previous_event = event
-        df = pd.DataFrame(attributes, columns=['x_coordinates', 'y_coordinates','period','period_time','previous_event_type','previous_event_x_coordinates', 'previous_event_y_coordinates','previous_event_period_time','previous_event_period','rebound','home_team','away_team','shot_type','attacking_team','game_seconds','speed','distance_from_last_event','home_players','away_players','time_since_powerplay_started','time_left','attacking_team_side','time_since_last_event','shot_by_team'])
-        print(df.columns)
+        df = pd.DataFrame(attributes, columns=['x_coordinates', 'y_coordinates','period','period_time','previous_event_type','previous_event_x_coordinates', 'previous_event_y_coordinates','previous_event_period_time','previous_event_period','rebound','home_team','away_team','shot_type','attacking_team','game_seconds','speed','distance_from_last_event','home_players','away_players','time_since_powerplay_started','remaining_time','attacking_team_side','time_since_last_event','shot_by_team'])
         return df
     
-    ## to add: penalty kill, powerplay, overtime, rebound_same_team, home_team_attacking
     
     def update_tracker(self):
         self.tracker = self.game.shape[0]
@@ -194,7 +195,11 @@ class GameClient:
             temp = self.game['angle_from_net']
             return temp.loc(axis=0)[self.tracker:]
         
-        if model == 'xgboost-tuning' or model == 'xgboost':
+        if model == 'xgboost':
+            temp = self.game[['distance_from_net','angle_from_net']]
+            return temp.loc[self.tracker:,:]
+        
+        if model == 'xgboost-tuning':
             feat_xgb = ['game_seconds', 'period', 'x_coordinates', 'y_coordinates','distance_from_net', 'angle_from_net', 
                         'previous_event_type','previous_event_x_coordinates', 'previous_event_y_coordinates',
                         'time_since_last_event', 'distance_from_last_event', 'rebound','change_in_angle', 'speed', 'time_since_powerplay_started', 
@@ -207,7 +212,7 @@ class GameClient:
             temp = self.get_angle_change(temp)
             temp = self.get_penalties()
             temp = temp.join(pd.get_dummies(temp['shot_type'],prefix='shot_type'))
-            print(temp.head(5))
+
             temp = self.preprocess(temp[feat_xgb])
             temp['previous_event_type'] = temp['previous_event_type'].replace(le_name_mapping)
             return temp.loc[self.tracker:,:] 
