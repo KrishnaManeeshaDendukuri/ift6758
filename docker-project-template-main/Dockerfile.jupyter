@@ -62,4 +62,5 @@ COPY . .
 
 EXPOSE 8889
 
-CMD ["jupyter-lab", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
+ENTRYPOINT ["jupyter-lab"]
+CMD ["--port=8889" ,"--no-browser", "--ip=0.0.0.0" ,"--allow-root"] 
