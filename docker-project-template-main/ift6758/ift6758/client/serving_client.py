@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# df = pd.read_csv('../ift6758-project-template-main/notebooks/final_df.csv')
 
 class ServingClient:
     def __init__(self, ip: str = "0.0.0.0", port: int = 5000, features=None):
@@ -27,13 +28,28 @@ class ServingClient:
         Args:
             X (Dataframe): Input dataframe to submit to the prediction service.
         """
-
-        raise NotImplementedError("TODO: implement this function")
+        logger.info(f"Initializing request to generate predictions")
+        try:
+            r = requests.post(
+                f"{self.base_url}/predict", 
+                json=json.loads(X.to_json())
+            )
+            logger.info(f"Successfully generated predictions")
+            return r.json()
+        except Exception as e:
+            print(e)
+            return None
+        # raise NotImplementedError("TODO: implement this function")
+        # logegr.info()
 
     def logs(self) -> dict:
         """Get server logs"""
-
-        raise NotImplementedError("TODO: implement this function")
+        logger.info(f"Initializing request to server get logs")
+        r = requests.get(
+            f"{self.base_url}/logs"
+        )
+        logger.info(f"Server Logs fetched")
+        return r.json()
 
     def download_registry_model(self, workspace: str, model: str, version: str) -> dict:
         """
@@ -50,5 +66,15 @@ class ServingClient:
             model (str): The model in the Comet ML registry to download
             version (str): The model version to download
         """
+        logger.info(f"Initializing request to download the model{model}-{version}")
+        self.workspace = workspace
+        self.model = model
+        self.version = version
+        self.model_filename = f"{workspace}_{model}_{version}"
+        r = requests.post(
+            f"{self.base_url}/download_registry_model", 
+            json= {'workspace': workspace, 'model': model, 'version': version}
+        )
+        logger.info(f"Successfully Downloaded Model")
+        # return r.json()
 
-        raise NotImplementedError("TODO: implement this function")
