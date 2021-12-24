@@ -16,7 +16,7 @@ WORKDIR /code
 
 ADD ./ift6758 ./ift6758
 
-RUN pip3 install -r /ift6758/requirements.txt && \
+RUN pip3 install -r ift6758/requirements.txt && \
     pip3 install -e ift6758
 
 ####################### copy only required files ##########
