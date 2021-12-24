@@ -2,6 +2,10 @@
 
 The Project is based upon the national sport of Canada: Ice hockey! We use both the aggregate and the play-by-play data captured by NHL API.
 
+## Milestone 3
+
+This third milestone allows us to integrate our models to work with live data and make predictions for games results. 
+
 ## Milestone 2
 
 #### Data Flow Diagram for the pipeline
