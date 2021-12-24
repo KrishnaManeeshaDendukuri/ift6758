@@ -21,6 +21,7 @@ RUN pip3 install -r ift6758/requirements.txt && \
 
 ####################### copy only required files ##########
 COPY ./app.py ./app.py
+COPY ./demo.ipynb ./demo.ipynb
 
 EXPOSE 8889
 
