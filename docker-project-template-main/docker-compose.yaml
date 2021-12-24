@@ -1,0 +1,30 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  serving:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.serving
+    #  args:
+    #    ARG: <ARG>
+    image: ift6758/serving:modelserving8
+    ports:
+     - "5000:5000"
+    environment:
+     - COMET_API_KEY = ${COMET_API_KEY}
+###### Uncomment below when you're ready to add the final notebook container to your docker compose
+  jupyter:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile.jupyter
+      # args:
+      #   ARG: <ARG>
+    image: ift6758/jupyter:dashboard8
+    ports:
+      - "8889:8889"
+    environment:
+      - COMET_API_KEY = ${COMET_API_KEY}
+      
+
+     
