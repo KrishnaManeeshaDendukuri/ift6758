@@ -14,7 +14,18 @@ FROM python:3.7
 # Create and cd into /code as your working directory
 WORKDIR /code
 
+ADD ./ift6758 ./ift6758
 
+RUN pip3 install -r /ift6758/requirements.txt && \
+    pip3 install -e ift6758
+
+####################### copy only required files ##########
+COPY ./app.py ./app.py
+
+EXPOSE 8889
+
+ENTRYPOINT ["jupyter-lab"]
+CMD ["--port=8889" ,"--no-browser", "--ip=0.0.0.0" ,"--allow-root"] 
 # The main docker commands you will find useful:
 # 
 # Add a file or directory
@@ -55,12 +66,3 @@ WORKDIR /code
 
 # TODO: specify default command - this is not required because you can always specify the command
 # either with the docker run command or in the docker-compose file
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-
-COPY . .
-
-EXPOSE 8889
-
-ENTRYPOINT ["jupyter-lab"]
-CMD ["--port=8889" ,"--no-browser", "--ip=0.0.0.0" ,"--allow-root"] 

@@ -13,14 +13,15 @@ FROM python:3.7
 # https://docs.docker.com/engine/reference/builder/#workdir
 # Create and cd into /code as your working directory
 WORKDIR /code
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+ADD ./ift6758 ./ift6758
 
-COPY . .
+RUN pip3 install -r /ift6758/requirements.txt && \
+    pip3 install -e ift6758
 
+####################### copy only required files ##########
+COPY ./app.py ./app.py
 
-ENTRYPOINT ["gunicorn"]
-CMD ["--bind", "0.0.0.0:5000", "app:app"]
+CMD gunicorn --bind 0.0.0.0:5000 app:app
 
 EXPOSE 5000
 
