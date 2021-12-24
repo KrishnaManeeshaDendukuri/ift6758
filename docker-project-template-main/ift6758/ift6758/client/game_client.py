@@ -9,13 +9,12 @@ from sklearn.preprocessing import LabelEncoder
 
 class GameClient:
     def __init__(self):
-        self.game_id = 0
         self.tracker = 0
         self.game = None
         self.home_team = None
         self.away_team = None
-        self.time_left = float('inf')
-        self.current_period = 0
+        self.dashboard_time = float('inf')
+        self.dashboard_period = 0
         
     def get_game(self,game_id):
         self.game_id = game_id
@@ -52,8 +51,8 @@ class GameClient:
         }
         
         for event in events:
-            self.time_left = event['about'].get('periodTimeRemaining')
-            self.current_period = event['about'].get('period')
+            self.dashboard_time = event['about'].get('periodTimeRemaining')
+            self.dashboard_period = event['about'].get('period')
             event['time_seconds'] = (event['about']['period']-1)*20*60 + int(event['about']['periodTime'][0:2])*60 + int(event['about']['periodTime'][3:5])
             
             if previous_event is not None: 
