@@ -45,9 +45,8 @@ class ServingClient:
     def logs(self) -> dict:
         """Get server logs"""
         logger.info(f"Initializing request to server get logs")
-        r = requests.post(
-            f"{self.base_url}/logs", 
-            json= {'workspace': self.workspace, 'model': self.model, 'version': self.version}
+        r = requests.get(
+            f"{self.base_url}/logs"
         )
         logger.info(f"Server Logs fetched")
         return r.json()
