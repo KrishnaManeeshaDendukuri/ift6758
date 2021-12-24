@@ -5,6 +5,7 @@ If you are in the same directory as this file (app.py), you can run run the app 
 gunicorn can be installed via:
     $ pip install gunicorn
 """
+import logging
 import os
 from pathlib import Path
 import logging
@@ -20,10 +21,14 @@ import pickle
 import ift6758
 
 
-LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
-COMET_API_KEY = os.environ.get("COMET_API_KEY")
 
 app = Flask(__name__)
+try:
+    LOG_FILE = os.environ.get("FLASK_LOG", "flask.log")
+    COMET_API_KEY = os.environ.get("COMET_API_KEY")
+except Exception as e:
+    print(e)
+    app.logger.info("Environment variables not set")
 
 def get_features(model_name):
     
@@ -48,6 +53,11 @@ def get_features(model_name):
            'shot_type_Wrist Shot'
         ]
     
+    if model_name == 'kleitoun_xgboost_1.0.0':
+        features = ['distance_from_net', 'angle_from_net']
+
+
+    
     return features
 
 
@@ -65,6 +75,10 @@ def rename_model_file(model_name):
     if model_name == 'kleitoun_xgboost-tuning_1.0.0':
         os.rename(f'XGBoost_hmtuning_model_v2.pickle', model_name)
 
+    if model_name == 'kleitoun_xgboost_1.0.0':
+        os.rename(f'XGBoost_Baseline_model.pickle', model_name)
+
+
 
 @app.before_first_request
 def before_first_request():
@@ -72,6 +86,9 @@ def before_first_request():
     Hook to handle any initialization before the first request (e.g. load model,
     setup logging handler, etc.)
     """
+    from imp import reload # python 2.x don't need to import reload, use it directly
+    reload(logging)
+
     # TODO: setup basic logging configuration
     logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
     
@@ -81,6 +98,7 @@ def before_first_request():
 
     # TODO: any other initialization before the first request (e.g. load default model)
     api = API(COMET_API_KEY)
+    print(f"API key is set to {COMET_API_KEY}")
     
     # download default model if it is not already downloaded
     global model_name
@@ -102,11 +120,13 @@ def before_first_request():
         model = pickle.load(open(model_name, 'rb'))
         app.logger.info(f'succesfully loaded default model ({model_name})')
 
+@app.route("/health", methods=["GET"])
+def health():
+    return {'message': 'Healthy'} 
 
 @app.route("/logs", methods=["GET"])
 def logs():
     """Reads data from the log file and returns them as the response"""
-    
     # TODO: read the log file specified and return the data
     with open(LOG_FILE) as f:
         response = f.readlines()
