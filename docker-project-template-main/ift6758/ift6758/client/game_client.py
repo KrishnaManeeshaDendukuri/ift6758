@@ -106,7 +106,7 @@ class GameClient:
                     previous_event_period = int(previous_event['about']['period'])
                     time_since_last_event = game_seconds - ((previous_event_period-1)*20*60 + previous_event_period_time*60)
                     previous_event_type = previous_event['result']['event']
-                    distance_from_last_event = np.sqrt((x_coordinates**2 - previous_event_x_coordinates**2)+(y_coordinates**2 - previous_event_y_coordinates**2))
+                    distance_from_last_event = np.sqrt((x_coordinates - previous_event_x_coordinates)**2+(y_coordinates - previous_event_y_coordinates)**2)
                     if time_since_last_event != 0:
                         speed = distance_from_last_event / time_since_last_event
                     else:
@@ -183,15 +183,15 @@ class GameClient:
         
     def features_for_models(self,model):
         if model == 'lrd':
-            temp = self.game['distance_from_net']
+            temp = self.game[['distance_from_net']]
             return temp.loc(axis=0)[self.tracker:]
         
         if model == 'lrda':
             temp = self.game[['distance_from_net','angle_from_net']]
             return temp.loc[self.tracker:,:]
         
-        if model == 'lda':
-            temp = self.game['angle_from_net']
+        if model == 'lra':
+            temp = self.game[['angle_from_net']]
             return temp.loc(axis=0)[self.tracker:]
         
         if model == 'xgboost':
