@@ -14,3 +14,4 @@ scikit-learn
 comet_ml
 jupyterlab
 ipywidgets
+xgboost
